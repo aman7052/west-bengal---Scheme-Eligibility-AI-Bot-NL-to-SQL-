@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Cloud API Integration - Step-by-Step Guide</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .slide {
+            display: none;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .slide.active {
+            display: flex;
+        }
+        /* Dashboard UI mockups style */
+        .dash-window {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+        .dash-header {
+            background: #0f172a;
+            padding: 8px 16px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="bg-[#0b0f19] text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
+
+    <!-- Top Navigation Bar / Progress -->
+    <header class="px-8 py-4 border-bottom border-slate-800 flex justify-between items-center bg-[#0d1321] z-10">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold text-xl">
+                <i class="fa-brands fa-whatsapp"></i>
+            </div>
+            <div>
+                <h1 class="text-sm font-extrabold tracking-wider uppercase text-emerald-400">Step-by-Step Guide</h1>
+                <p class="text-xs text-slate-400">WhatsApp API Integration</p>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="flex items-center gap-4">
+            <span class="text-xs font-semibold text-slate-400">Progress</span>
+            <div class="w-64 bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div id="progressBar" class="bg-gradient-to-r from-emerald-500 to-blue-500 h-full w-[11%] transition-all duration-300"></div>
+            </div>
+            <span id="slideCounter" class="text-xs font-mono text-slate-300 bg-slate-800 px-2 py-1 rounded">1 / 9</span>
+        </div>
+    </header>
+
+    <!-- Main Slide Display Area -->
+    <main class="flex-grow flex items-center justify-center p-6 relative">
+        
+        <!-- SLIDE 1: INTRO (TITLE SLIDE) -->
+        <div class="slide active flex-col justify-center items-center text-center max-w-4xl mx-auto py-12" id="slide-1">
+            <span class="px-4 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-extrabold tracking-widest uppercase mb-6">Complete Blueprint</span>
+            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+                WhatsApp Cloud API <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400">Bot Integration</span>
+            </h1>
+            <p class="text-lg text-slate-400 mb-10 max-w-2xl">
+                Aman, is presentation mein complete setup sequence hai. Pehle <strong>Frontend Process</strong> (Meta Settings) aur uske baad <strong>Backend Process</strong> (Flask + Webhook) step-by-step clear ho jayega.
+            </p>
+            
+            <div class="flex gap-4">
+                <button onclick="changeSlide(1)" class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-lg transition duration-200 shadow-lg shadow-emerald-500/20">
+                    Get Started <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+            
+            <!-- Quick index flow -->
+            <div class="grid grid-cols-2 gap-4 mt-16 text-left max-w-lg w-full">
+                <div class="p-4 bg-slate-900/50 border border-slate-800/80 rounded-xl flex items-center gap-3">
+                    <span class="w-8 h-8 rounded bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">1</span>
+                    <div>
+                        <h4 class="text-sm font-bold text-white">Frontend Setup</h4>
+                        <p class="text-xs text-slate-500">Meta, Credentials & Templates</p>
+                    </div>
+                </div>
+                <div class="p-4 bg-slate-900/50 border border-slate-800/80 rounded-xl flex items-center gap-3">
+                    <span class="w-8 h-8 rounded bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold">2</span>
+                    <div>
+                        <h4 class="text-sm font-bold text-white">Backend Server</h4>
+                        <p class="text-xs text-slate-500">Flask, Ngrok & Webhook</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: APP CREATION -->
+        <div class="slide flex-col justify-between w-full max-w-5xl mx-auto" id="slide-2">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded">Phase 1 & 2</span>
+                        <span class="text-xs text-slate-400 font-mono">Frontend</span>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">Meta Developer Portal & App Creation</h2>
+                    
+                    <ul class="space-y-4 text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">1</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Facebook Setup:</strong> Naya FB account banayein aur email + phone number verify karein taaki error na aaye.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">2</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">developers.facebook.com:</strong> Portal par signup process poora karke account active karein.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">3</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Create App:</strong> "Create App" click karein, app ka name (e.g., <strong>noobuild</strong>) likhein aur "WhatsApp" set karein.</p>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Visual Mockup -->
+                <div class="lg:col-span-7 dash-window">
+                    <div class="dash-header">
+                        <div class="flex gap-1.5 mr-4">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">Meta for Developers > Admin Apps</span>
+                    </div>
+                    <div class="p-6 bg-[#0f172a] space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                            <div class="text-white font-bold text-sm"><i class="fa-brands fa-meta mr-2 text-blue-500"></i>Meta developers</div>
+                            <button class="px-3 py-1 bg-emerald-500 text-slate-950 font-extrabold text-xs rounded hover:bg-emerald-400"><i class="fa-solid fa-plus mr-1"></i> Create App</button>
+                        </div>
+                        <div class="p-4 bg-[#1e293b] rounded-lg border border-slate-700/80">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-100">noobuild</h4>
+                                    <span class="text-xs text-slate-400">App ID: 944096906852...</span>
+                                </div>
+                                <span class="text-xs bg-yellow-500/10 text-yellow-500 px-2 py-0.5 rounded border border-yellow-500/20">In Development</span>
+                            </div>
+                            <p class="text-xs text-slate-400">Business Portfolio: <strong>Amanprojects</strong></p>
+                            <div class="mt-4 flex justify-between items-center bg-[#0f172a] p-2.5 rounded border border-slate-800">
+                                <span class="text-xs text-slate-400"><i class="fa-brands fa-whatsapp text-emerald-400 mr-2"></i> WhatsApp API Integration</span>
+                                <span class="text-xs text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> Setup Done</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: TESTING PHASE -->
+        <div class="slide flex-col justify-between w-full max-w-5xl mx-auto" id="slide-3">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded">Phase 3</span>
+                        <span class="text-xs text-slate-400 font-mono">Frontend</span>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">Temporary Token & Test Numbers</h2>
+                    
+                    <ul class="space-y-4 text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">1</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">API Setup:</strong> Left sidebar mein <strong>WhatsApp > API Setup</strong> par click karein.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">2</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Access Token:</strong> Sabse upar milne wale Temporary Token ko copy kar lein (valid for 24h).</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">3</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">From & To Configuration:</strong> 'From' dropdown se test number aur 'To' mein apna phone number add karke verify karein.</p>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Visual Mockup -->
+                <div class="lg:col-span-7 dash-window">
+                    <div class="dash-header">
+                        <div class="flex gap-1.5 mr-4">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">Meta Dashboard > WhatsApp > API Setup</span>
+                    </div>
+                    <div class="p-6 bg-[#0f172a] space-y-4 font-sans text-xs">
+                        <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg">
+                            <label class="block text-slate-400 font-bold mb-1">Temporary Access Token</label>
+                            <div class="flex gap-2">
+                                <input type="text" value="EAABwz8p0p08BAO9fnljaknerpoahepoihvjaoierhoai..." class="bg-slate-950 border border-slate-800 px-3 py-1.5 rounded text-slate-300 flex-grow font-mono overflow-ellipsis" disabled>
+                                <button class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded text-slate-300"><i class="fa-regular fa-copy"></i> Copy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg">
+                                <label class="block text-slate-400 font-bold mb-1"><span class="bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">From</span> Test Number</label>
+                                <div class="p-2 bg-slate-950 border border-slate-800 rounded text-slate-300 font-mono">
+                                    +1 555 634 6045
+                                </div>
+                            </div>
+                            <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg">
+                                <label class="block text-slate-400 font-bold mb-1"><span class="bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded">To</span> Recipient Number</label>
+                                <div class="flex gap-1">
+                                    <div class="p-2 bg-slate-950 border border-slate-800 rounded text-slate-300 font-mono flex-grow">
+                                        +91 XXXXX XXXXX
+                                    </div>
+                                    <button class="px-2 bg-[#1e293b] hover:bg-slate-700 rounded border border-slate-700 text-slate-300">OTP</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 flex justify-between items-center">
+                            <span class="text-slate-400">Step 2: Send message with API</span>
+                            <button class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded">Send Message</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: SYSTEM USER (PERMANENT ACCESS 1) -->
+        <div class="slide flex-col justify-between w-full max-w-5xl mx-auto" id="slide-4">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-red-400 uppercase bg-red-500/10 px-3 py-1 rounded">Phase 4 (Crucial)</span>
+                        <span class="text-xs text-slate-400 font-mono">Frontend</span>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">Permanent Token Setup: System User</h2>
+                    <p class="text-xs text-yellow-400 bg-yellow-400/10 p-2.5 rounded border border-yellow-500/20">
+                        <i class="fa-solid fa-triangle-exclamation mr-1"></i> Temporary Token 2-24 ghante mein expire ho jata hai. Continuous runtime ke liye isse setup karna zaroori hai.
+                    </p>
+                    
+                    <ul class="space-y-4 text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">1</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Business Information:</strong> Dashboard page par Business name par right click karke link naye tab mein open karein.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">2</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Users > System Users:</strong> Left sidebar panel se System Users par jayein aur "+ Add" icon ko press karein.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">3</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Admin Assignment:</strong> Naya System user name create karein aur user role **'Admin'** select karke create karein.</p>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Visual Mockup -->
+                <div class="lg:col-span-7 dash-window">
+                    <div class="dash-header">
+                        <div class="flex gap-1.5 mr-4">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">Meta Business Settings > Users > System Users</span>
+                    </div>
+                    <div class="p-6 bg-[#0f172a] text-xs">
+                        <!-- Pop up style of Create System User -->
+                        <div class="bg-slate-900 border border-slate-700/60 rounded-xl p-5 max-w-sm mx-auto shadow-2xl">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-sm text-slate-100">Create system user</h3>
+                                <i class="fa-solid fa-xmark text-slate-400"></i>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-slate-400 mb-1 font-bold">System user name</label>
+                                    <input type="text" value="zafark" class="w-full bg-slate-950 border border-slate-800 px-3 py-2 rounded text-slate-100" disabled>
+                                </div>
+                                <div>
+                                    <label class="block text-slate-400 mb-1 font-bold">System user role</label>
+                                    <select class="w-full bg-slate-950 border border-slate-800 px-3 py-2 rounded text-emerald-400 font-bold" disabled>
+                                        <option>Admin</option>
+                                    </select>
+                                </div>
+                                <div class="pt-2 flex justify-end gap-2">
+                                    <button class="px-3 py-1.5 bg-slate-800 text-slate-300 rounded">Cancel</button>
+                                    <button class="px-4 py-1.5 bg-emerald-500 text-slate-950 font-bold rounded">Create system user</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: TOKEN PERMISSIONS (PERMANENT ACCESS 2) -->
+        <div class="slide flex-col justify-between w-full max-w-5xl mx-auto" id="slide-5">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-red-400 uppercase bg-red-500/10 px-3 py-1 rounded">Phase 4 (Crucial)</span>
+                        <span class="text-xs text-slate-400 font-mono">Frontend</span>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">Assets & Permissions Mapping</h2>
+                    
+                    <ul class="space-y-4 text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">1</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Assign Assets:</strong> Select "Apps", choose your created app, and check **Manage app (Full control)** then assign assets.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">2</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Generate Token:</strong> Expiration configuration window par **"Never Expire"** checkbox choose karein.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">3</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Access Scopes:</strong> In 3 permissions scope ko mark karein:<br>
+                            • <code>whatsapp_business_management</code><br>
+                            • <code>whatsapp_business_messaging</code><br>
+                            • <code>whatsapp_business_manage_events</code></p>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Visual Mockup -->
+                <div class="lg:col-span-7 dash-window">
+                    <div class="dash-header">
+                        <div class="flex gap-1.5 mr-4">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">Meta Business Dashboard > Select Scopes</span>
+                    </div>
+                    <div class="p-6 bg-[#0f172a] text-xs space-y-3">
+                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-800">
+                            <div class="text-slate-200 font-bold mb-3"><i class="fa-solid fa-key text-emerald-400 mr-2"></i> Token Permission Manager</div>
+                            
+                            <div class="space-y-2.5 max-h-56 overflow-y-auto pr-2">
+                                <div class="flex items-center justify-between p-2 bg-slate-950 rounded border border-emerald-500/20">
+                                    <span class="font-mono text-slate-300">whatsapp_business_manage_events</span>
+                                    <span class="text-emerald-400 font-bold text-[10px] bg-emerald-500/10 px-2 py-0.5 rounded">Checked</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2 bg-slate-950 rounded border border-emerald-500/20">
+                                    <span class="font-mono text-slate-300">whatsapp_business_management</span>
+                                    <span class="text-emerald-400 font-bold text-[10px] bg-emerald-500/10 px-2 py-0.5 rounded">Checked</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2 bg-slate-950 rounded border border-emerald-500/20">
+                                    <span class="font-mono text-slate-300">whatsapp_business_messaging</span>
+                                    <span class="text-emerald-400 font-bold text-[10px] bg-emerald-500/10 px-2 py-0.5 rounded">Checked</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 flex justify-between items-center pt-2 border-t border-slate-800">
+                                <span class="text-slate-400">Token Expiry: <strong class="text-white">Never Expire</strong></span>
+                                <button class="px-3 py-1.5 bg-blue-600 text-white rounded font-bold hover:bg-blue-500">Generate Token</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: TEMPLATE CREATION -->
+        <div class="slide flex-col justify-between w-full max-w-5xl mx-auto" id="slide-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded">Phase 5</span>
+                        <span class="text-xs text-slate-400 font-mono">Frontend</span>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">Create Message Template</h2>
+                    
+                    <ul class="space-y-4 text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">1</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">WhatsApp Manager:</strong> API Setup page par niche slide karein aur "create your own template" par click karein.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">2</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Category - Utility Selection:</strong> Choose **Utility** category. Isse verification and notifications fast clear approval milti hai (under 2 hours).</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">3</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Draft and Submit:</strong> Template name define karein, language "English" select karein, header-body setup karke **Submit for Review** karein.</p>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Visual Mockup -->
+                <div class="lg:col-span-7 dash-window">
+                    <div class="dash-header">
+                        <div class="flex gap-1.5 mr-4">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">WhatsApp Manager > Message Templates</span>
+                    </div>
+                    <div class="p-6 bg-[#0f172a] text-xs space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-100 font-bold">Template Config: payment_confirmation</span>
+                            <span class="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded border border-blue-500/25">Category: Utility</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div class="md:col-span-7 space-y-3">
+                                <div>
+                                    <label class="block text-slate-400 mb-1">Template Language</label>
+                                    <div class="p-2 bg-slate-900 rounded border border-slate-800 text-slate-200">English (IND)</div>
+                                </div>
+                                <div>
+                                    <label class="block text-slate-400 mb-1">Body Text</label>
+                                    <textarea class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded text-slate-300 h-24 resize-none" disabled>Hello, your payment setup verification has been processed successfully. Thank you.</textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="md:col-span-5 bg-slate-900/50 rounded-lg border border-slate-800 p-3">
+                                <label class="block text-slate-400 font-bold mb-2 text-[10px] uppercase tracking-wider">Template Preview</label>
+                                <div class="bg-emerald-950/20 border border-emerald-500/20 rounded p-3 text-slate-300">
+                                    <div class="text-[10px] text-emerald-400 font-mono mb-1">Preview Screen</div>
+                                    <p class="leading-relaxed text-xs">Hello, your payment setup verification has been processed successfully. Thank you.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-2 flex justify-end">
+                            <button class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded">Submit for Review</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: BACKEND ENVIRONMENT SETUP -->
+        <div class="slide flex-col justify-between w-full max-w-5xl mx-auto" id="slide-7">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-blue-400 uppercase bg-blue-500/10 px-3 py-1 rounded">Phase 6</span>
+                        <span class="text-xs text-slate-400 font-mono">Backend</span>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">Local Server & Ngrok Tunnel Setup</h2>
+                    
+                    <ul class="space-y-4 text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-sm mt-0.5">1</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Flask Environment:</strong> Command prompt par Flask dependencies install karein:<br>
+                            <code class="bg-slate-900 px-2 py-1 text-pink-400 rounded font-mono text-xs mt-1 block w-fit">pip install flask requests</code></p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-sm mt-0.5">2</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Ngrok Configuration:</strong> Ngrok account par signup karke authtoken link configure karein:<br>
+                            <code class="bg-slate-900 px-2 py-1 text-pink-400 rounded font-mono text-xs mt-1 block w-fit">ngrok config add-authtoken &lt;YOUR_TOKEN&gt;</code></p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-sm mt-0.5">3</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Start Tunneling:</strong> Port 5000 par secure HTTPS URL tunnel start karein:<br>
+                            <code class="bg-slate-900 px-2 py-1 text-pink-400 rounded font-mono text-xs mt-1 block w-fit">ngrok http 5000</code></p>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Visual Mockup -->
+                <div class="lg:col-span-7 dash-window">
+                    <div class="dash-header">
+                        <div class="flex gap-1.5 mr-4">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">Command Prompt (ngrok terminal)</span>
+                    </div>
+                    <div class="p-6 bg-slate-950 font-mono text-xs text-slate-300 space-y-2">
+                        <p class="text-emerald-400">ngrok by @inconshreveable</p>
+                        <p>Session Status: <span class="text-emerald-400 font-bold">online</span></p>
+                        <p>Account: Aman Yadav</p>
+                        <p>Version: 3.x.x</p>
+                        <p>Web Interface: <span class="text-blue-400">http://127.0.0.1:4040</span></p>
+                        <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-lg mt-3">
+                            <p class="text-slate-400">Forwarding HTTPS Endpoint:</p>
+                            <p class="text-yellow-400 font-bold select-all">https://unbent-occultist-superbowl.ngrok-free.dev</p>
+                        </div>
+                        <p class="text-slate-500 mt-2">Connections: ttl: 0, opn: 0, rt1: 0, rt5: 0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: WEBHOOK & SUBSCRIPTION -->
+        <div class="slide flex-col justify-between w-full max-w-5xl mx-auto" id="slide-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-blue-400 uppercase bg-blue-500/10 px-3 py-1 rounded">Phase 7 & 8</span>
+                        <span class="text-xs text-slate-400 font-mono">Backend</span>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">Webhook Configuration & Field Setup</h2>
+                    
+                    <ul class="space-y-4 text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-sm mt-0.5">1</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Callback URL Format:</strong> Ngrok terminal URL ko copy karein aur dashboard callback field par end par **`/webhook`** set karein.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-sm mt-0.5">2</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Verify Token:</strong> Meta validation dashboard panel par ek custom secret verify key code likhein (e.g., <strong>abcd_bot_2026</strong>).</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-sm mt-0.5">3</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Event Subscription:</strong> Niche Webhook Fields table se **`messages`** find karke **Subscribe** and **Test** click karein.</p>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Visual Mockup -->
+                <div class="lg:col-span-7 dash-window">
+                    <div class="dash-header">
+                        <div class="flex gap-1.5 mr-4">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">Meta Config > Edit Webhook Subscription</span>
+                    </div>
+                    <div class="p-6 bg-[#0f172a] text-xs space-y-3.5">
+                        <div class="space-y-2">
+                            <label class="block text-slate-400">Callback URL</label>
+                            <div class="p-2.5 bg-slate-900 rounded border border-slate-800 text-slate-300 font-mono">
+                                https://unbent-occultist-superbowl.ngrok-free.dev/webhook
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-slate-400">Verify Token</label>
+                            <div class="p-2.5 bg-slate-900 rounded border border-slate-800 text-slate-300 font-mono">
+                                abcd_bot_2026
+                            </div>
+                        </div>
+                        
+                        <div class="pt-2 border-t border-slate-800/80">
+                            <div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
+                                <div>
+                                    <span class="font-bold text-slate-200">Webhook field: messages</span>
+                                    <p class="text-[10px] text-slate-400">Receive text message payloads</p>
+                                </div>
+                                <div class="flex gap-2">
+                                    <span class="bg-blue-500/25 text-blue-400 px-2 py-0.5 rounded text-[10px]">Subscribed</span>
+                                    <button class="bg-[#1e293b] text-slate-300 border border-slate-700 px-2 py-1 rounded">Test</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: CODE SETUP & SUCCESS HANDSHAKE -->
+        <div class="slide flex-col justify-between w-full max-w-5xl mx-auto" id="slide-9">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded">Phase 9</span>
+                        <span class="text-xs text-slate-400 font-mono">Complete Handshake</span>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">Bot Integration & Live Validation</h2>
+                    
+                    <ul class="space-y-4 text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">1</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Bot Logic Server:</strong> `app.py` script run karein port 5000 par secure backend endpoints listening active ke sath.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">2</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Test Handshake:</strong> Meta sample webhook se 'Send to server' test command trigger karein. Server cmd par `POST 200` status verification signal print hoga.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mt-0.5">3</span>
+                            <p class="text-sm flex-1"><strong class="text-white block">Success Response:</strong> Personal WhatsApp app se "hi" text bhejte hi server auto dynamic response generate karke deliver karega: <em class="text-emerald-400 font-bold block">"Hey Aman, I am your WhatsApp bot."</em></p>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Visual Mockup -->
+                <div class="lg:col-span-7 dash-window">
+                    <div class="dash-header">
+                        <div class="flex gap-1.5 mr-4">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">Live Integration Handshake Output</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2">
+                        <!-- Left Terminal Log -->
+                        <div class="p-4 bg-slate-950 border-r border-slate-800 font-mono text-[10px] space-y-2 text-slate-300">
+                            <div class="text-[11px] text-slate-400 font-bold pb-1 border-b border-slate-900">VS Code Terminal</div>
+                            <p class="text-slate-500">* Running on http://127.0.0.1:5000/</p>
+                            <p class="text-blue-400">Message received: from 91XXXXXXXXXX</p>
+                            <p class="text-emerald-400">Sending response to recipient client...</p>
+                            <p class="bg-emerald-500/10 text-emerald-400 p-1.5 rounded-sm">127.0.0.1 - - "POST /webhook HTTP/1.1" 200 -</p>
+                        </div>
+                        
+                        <!-- Right WhatsApp Screen -->
+                        <div class="p-4 bg-[#075e54]/10 flex flex-col justify-between h-56">
+                            <div class="flex items-center gap-2 bg-[#075e54] text-white p-2 rounded-lg text-[10px] -mt-2 -mx-2 shadow-md">
+                                <div class="w-5 h-5 rounded-full bg-slate-600 flex items-center justify-center"><i class="fa-solid fa-robot text-[10px]"></i></div>
+                                <div>
+                                    <span class="font-bold block leading-none">WhatsApp Bot Client</span>
+                                    <span class="text-[8px] text-slate-300">online</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Chat area -->
+                            <div class="space-y-2.5 flex-grow overflow-y-auto py-3">
+                                <div class="flex justify-end">
+                                    <span class="bg-[#dcf8c6] text-slate-900 text-[10px] p-2 rounded-lg max-w-[80%] shadow-sm">hi</span>
+                                </div>
+                                <div class="flex justify-start">
+                                    <span class="bg-white text-slate-900 text-[10px] p-2 rounded-lg max-w-[85%] shadow-sm block leading-normal">
+                                        Hey Aman, I am your WhatsApp bot.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Navigation Footer Controller -->
+    <footer class="px-8 py-5 border-t border-slate-800 bg-[#0d1321] flex justify-between items-center z-10">
+        <button id="prevBtn" onclick="navigateSlide(-1)" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm rounded-lg transition duration-200 disabled:opacity-30" disabled>
+            <i class="fa-solid fa-chevron-left mr-2"></i> Previous
+        </button>
+        
+        <div class="flex gap-2">
+            <!-- Navigation slide jump indicators -->
+            <span onclick="goToSlide(1)" class="indicator w-2.5 h-2.5 rounded-full bg-emerald-500 cursor-pointer transition-all"></span>
+            <span onclick="goToSlide(2)" class="indicator w-2.5 h-2.5 rounded-full bg-slate-700 cursor-pointer transition-all"></span>
+            <span onclick="goToSlide(3)" class="indicator w-2.5 h-2.5 rounded-full bg-slate-700 cursor-pointer transition-all"></span>
+            <span onclick="goToSlide(4)" class="indicator w-2.5 h-2.5 rounded-full bg-slate-700 cursor-pointer transition-all"></span>
+            <span onclick="goToSlide(5)" class="indicator w-2.5 h-2.5 rounded-full bg-slate-700 cursor-pointer transition-all"></span>
+            <span onclick="goToSlide(6)" class="indicator w-2.5 h-2.5 rounded-full bg-slate-700 cursor-pointer transition-all"></span>
+            <span onclick="goToSlide(7)" class="indicator w-2.5 h-2.5 rounded-full bg-slate-700 cursor-pointer transition-all"></span>
+            <span onclick="goToSlide(8)" class="indicator w-2.5 h-2.5 rounded-full bg-slate-700 cursor-pointer transition-all"></span>
+            <span onclick="goToSlide(9)" class="indicator w-2.5 h-2.5 rounded-full bg-slate-700 cursor-pointer transition-all"></span>
+        </div>
+
+        <button id="nextBtn" onclick="navigateSlide(1)" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-lg transition duration-200">
+            Next <i class="fa-solid fa-chevron-right ml-2"></i>
+        </button>
+    </footer>
+
+    <!-- Interactive Navigation Scripts -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 9;
+
+        function updateProgress() {
+            // Update Progress bar percentage
+            const pct = Math.round((currentSlide / totalSlides) * 100);
+            document.getElementById('progressBar').style.width = `${pct}%`;
+            
+            // Update Text Counter
+            document.getElementById('slideCounter').innerText = `${currentSlide} / ${totalSlides}`;
+            
+            // Toggle Buttons disabled state
+            document.getElementById('prevBtn').disabled = (currentSlide === 1);
+            
+            const nextBtn = document.getElementById('nextBtn');
+            if (currentSlide === totalSlides) {
+                nextBtn.innerHTML = 'Finish <i class="fa-solid fa-circle-check ml-2"></i>';
+                nextBtn.classList.replace('bg-emerald-500', 'bg-blue-600');
+                nextBtn.classList.replace('hover:bg-emerald-400', 'hover:bg-blue-500');
+                nextBtn.classList.replace('text-slate-950', 'text-white');
+            } else {
+                nextBtn.innerHTML = 'Next <i class="fa-solid fa-chevron-right ml-2"></i>';
+                nextBtn.className = "px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-lg transition duration-200";
+            }
+
+            // Update bottom dots indicators active styling
+            const indicators = document.querySelectorAll('.indicator');
+            indicators.forEach((el, index) => {
+                if (index + 1 === currentSlide) {
+                    el.className = "indicator w-6 h-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-blue-500 cursor-pointer transition-all";
+                } else {
+                    el.className = "indicator w-2.5 h-2.5 rounded-full bg-slate-700 cursor-pointer transition-all";
+                }
+            });
+        }
+
+        function changeSlide(index) {
+            // Remove active classes
+            document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+            
+            currentSlide = index;
+            
+            // Add active class to target slide
+            document.getElementById(`slide-${currentSlide}`).classList.add('active');
+            updateProgress();
+        }
+
+        function navigateSlide(direction) {
+            let target = currentSlide + direction;
+            if (target >= 1 && target <= totalSlides) {
+                changeSlide(target);
+            }
+        }
+
+        function goToSlide(index) {
+            changeSlide(index);
+        }
+
+        // Add keyboard arrow keys support
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight') {
+                navigateSlide(1);
+            } else if (event.key === 'ArrowLeft') {
+                navigateSlide(-1);
+            }
+        });
